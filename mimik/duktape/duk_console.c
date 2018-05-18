@@ -10,6 +10,9 @@
 #include <stdarg.h>
 #include "duktape.h"
 #include "duk_console.h"
+#if defined(__ANDROID__)
+#include <android/log.h>
+#endif
 
 /* XXX: Add some form of log level filtering. */
 
@@ -60,7 +63,11 @@ static duk_ret_t duk__console_log_helper(duk_context *ctx, const char *error_nam
 		duk_get_prop_string(ctx, -1, "stack");
 	}
 
+#if defined(__ANDROID__)
+        __android_log_print(ANDROID_LOG_ERROR, "mCM", "%s", duk_to_string(ctx, -1));
+#else
 	printf("%s\n", duk_to_string(ctx, -1));
+#endif
 	return 0;
 }
 
